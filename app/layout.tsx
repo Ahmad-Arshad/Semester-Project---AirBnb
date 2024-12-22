@@ -7,6 +7,9 @@ import ClientOnly from "./components/ClientOnly";
 import RegisterModal from "./components/Modals/RegisterModal";
 import ToasterProvider from "./providers/ToasterProvider";
 import { Toaster } from "react-hot-toast";
+import LoginModal from "./components/Modals/LoginModal";
+import getCurrentUser from "./actions/getCurrentUser";
+import RentModal from "./components/Modals/RentModal";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,21 +31,26 @@ const font  = Nunito({
   subsets: ['latin'],
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const currentUser = await getCurrentUser();
   return (
     <html lang="en">
       <body className = {font.className}> 
         <ClientOnly>
           <ToasterProvider />
+          <RentModal />
+          <LoginModal />
           <RegisterModal />
-          <Navbar />
+          <Navbar currentUser={currentUser} />
         </ClientOnly>
+        <div className="pb-20 pt-28">
+          {children}
+        </div>
         
-        {children}
       </body>
     </html>
   );
